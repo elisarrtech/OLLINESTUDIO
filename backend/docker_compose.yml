@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: ollin
+      POSTGRES_PASSWORD: changeme
+      POSTGRES_DB: ollin
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - SQLALCHEMY_DATABASE_URI=postgresql://ollin:changeme@db:5432/ollin
+      - SECRET_KEY=change_me
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
