@@ -1,12 +1,21 @@
-# backend/scripts/create_admin.py
-from app.db import init_db, get_session
-from app.crud import create_user, get_user_by_email
+# Script utilitario para crear admin desde CLI (ejecutar en Railway run o localmente)
+from app.db import init_db
+from sqlmodel import Session
+from app.db import engine
+from app import crud
 
-init_db()
-with next(get_session()) as session:
-    email = "admin@ollin.example"
-    if not get_user_by_email(session, email):
-        create_user(session, email=email, password="un_password_seguro", full_name="Admin", role="admin")
-        print("Admin created")
-    else:
-        print("Admin exists")
+def create_admin(email: str, password: str, full_name: str = "Admin"):
+    init_db()
+    with Session(engine) as session:
+        existing = crud.get_user_by_email(session, email)
+        if existing:
+            print("Admin ya existe:", email)
+            return
+        crud.create_user(session, email=email, password=password, full_name=full_name, role="admin")
+        print("Admin creado:", email)
+
+if __name__ == "__main__":
+    import os
+    email = os.environ.get("FIRST_SUPERUSER_EMAIL", "admin@ollin.example")
+    password = os.environ.get("FIRST_SUPERUSER_PASSWORD", "changeme123")
+    create_admin(email, password)
