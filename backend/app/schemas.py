@@ -1,6 +1,7 @@
-from typing import Optional, List
 from pydantic import BaseModel, EmailStr
+from typing import Optional, List
 from datetime import date, time, datetime
+from app.models import UserRole
 
 class Token(BaseModel):
     access_token: str
@@ -10,15 +11,21 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     full_name: Optional[str] = None
+    role: UserRole = UserRole.cliente
 
 class UserRead(BaseModel):
     id: int
     email: EmailStr
     full_name: Optional[str]
+    role: UserRole
     is_active: bool
 
     class Config:
         orm_mode = True
+
+class LoginPayload(BaseModel):
+    email: EmailStr
+    password: str
 
 class ClassCreate(BaseModel):
     title: str
