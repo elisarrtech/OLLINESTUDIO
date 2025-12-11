@@ -1,7 +1,11 @@
 from sqlmodel import create_engine, SQLModel, Session
 from app.core.config import settings
 
-engine = create_engine(settings.SQLALCHEMY_DATABASE_URI, echo=False)
+connect_args = {}
+if settings.DATABASE_URL.startswith("sqlite"):
+    connect_args = {"check_same_thread": False}
+
+engine = create_engine(settings.DATABASE_URL, echo=False, connect_args=connect_args)
 
 def init_db():
     # importa modelos para que se registren
