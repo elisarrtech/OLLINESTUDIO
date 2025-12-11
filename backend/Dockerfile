@@ -1,3 +1,4 @@
+ url=https://github.com/elisarrtech/OLLINESTUDIO/blob/main/backend/Dockerfile
 FROM python:3.11-slim
 
 # Instala dependencias del sistema necesarias para compilación y psycopg2
